@@ -1,5 +1,5 @@
-# osvezbe
-Treći čas pokriva:
+# Čas 3
+Čas pokriva:
 
 - kreiranje i brisanje direktorijuma
 - otvaranje/zatvaranje fajlova

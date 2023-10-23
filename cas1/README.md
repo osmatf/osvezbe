@@ -1,5 +1,5 @@
-# osvezbe
-Prvi čas pokriva:
+# Čas 1
+Čas pokriva:
 
 - obnavljanje potrebnog gradiva iz programiranja 2
 - uvođenje makroa za proveru grešaka

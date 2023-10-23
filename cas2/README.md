@@ -1,5 +1,5 @@
-# osvezbe
-Drugi čas pokriva:
+# Čas 2
+Čas pokriva:
 
 - rad sa informacijama o korisnicima i grupama
 - rad sa informacijama o fajlovima na sistemu
