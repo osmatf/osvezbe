@@ -1,0 +1,100 @@
+1) Napisati program 'fshell' koji simulira shell i omogucava neke jednostavne 
+operacije nad fajlovima i direktorijumima. Program treba da prikazuje znak '%'. 
+Primer pokretanja programa:
+--------------------------------------------------------------------------------
+./fshell
+% cat 1.txt
+ovo je neki tekst
+% rm folder_a/unutra.txt
+% insert neka_rec 5 1.txt
+% cat 1.txt
+ovo jneka_recekst
+% mkdir folder_b
+% cp 1.txt folder_a/1.txt.cpy
+% mkfile folder_b/2.txt
+% exit
+--------------------------------------------------------------------------------
+Podrzane komande:
+a) exit - izlazak iz programa                                                     [mora da radi] 
+b) mkfile [putanja do fajla] - pravi novi prazan fajl                             [treba da radi]
+c) mkdir [putanja do direktorijuma] - pravi novi direktorijum                     [treba da radi]
+d) rm [putanja do fajla] - brise fajl                                             [treba da radi]
+e) rmdir [putanja do praznog direktorijuma] - brise prazan direktorijum           [treba da radi]
+f) cat [putanja do fajla] - ispisuje sadzaj fajla u terminal                      [treba da radi]
+g) insert [rec koju treba ubaciti] [pozicija u fajlu] [putanja do fajla] - od     [napredno]
+   prosledjene pozicije ubacuje novu rec tako sto ce prepisati postojeci sadrzaj
+   od te pozicije pa na dalje
+h) cp [original] [kopija] - pravi kopiju fajla                                    [odlicno ako radi]
+Obrada gresaka:
+- ukoliko dodje do greske, npr. ne postoji fajl koji treba prekopirati, ispisati  [odlicno ako radi]
+sistemsku poruku o gresci i nastaviti normalno sa izvrsavanjem programa (ne raditi exit!).
+- u slucaju nepoznate komande ispisati 'Unknown command' i nastaviti izvrsavanje  [treba da radi]
+- mozete pretpostaviti da su komande pozvane sa ispravnim brojem argumenata :)
+
+Pomoc u organizaciji resenja
+============================
+- Zadatak raditi deo po deo, dakle prvo a), pa b), pa c) itd.
+- Napraviti while petlju u kojoj se sa standardnog ulaza cita red po red
+- Prva naredba u while petlji treba da ispisuje karakter '%' i jedan razmak 
+  nakon njega (karakter '%' se ispisuje sa "%%" jer je specijalan za printf)
+- Linija se najbolje cita sa getline() f-jom (man 3 getline za detalje):
+    char *line = NULL;
+    size_t line_len = 0;
+    while (-1 != getline(&line, &line_len, stdin)) {
+        ...radite sta god treba sa trenutnom linijom...
+    }
+    free(line);
+- Dalje, liniju parsirati sa sscanf() (man 3 sscanf za detalje):
+    #define MAX_CMD_LEN (6)
+    ...u while petlji...
+    int bytesRead = 0;
+    int totalBytesRead = 0;
+    char cmdBuf[MAX_CMD_LEN+1];
+    sscanf(line, "%s%n", cmdBuf, &bytesRead); // %n se koristi da upisete broj
+    totalBytesRead += bytesRead;              // procitanih karaktera u neku 
+                                              // promenljivu (kod nas je to
+                                              // bytesRead promenljiva)
+    if (!strcmp(cmdBuf, "cat")) {       
+        ...obradi ovaj slucaj... <------------------------------------------|
+    } else if (...) {                                                       |
+        ....                                                                |
+    }                                                                       |
+    ...pa sad kad vam treba sledeci argument komande unutar nekog if-a, npr.|...
+    // Moramo se pomeriti unapred da ne bismo stalno citali isti string, a 
+    // pomeramo se za broj prethodno procitanih bajtova
+    sscanf(line+totalBytesRead, "%s%n", filePath, &bytesRead);
+    totalBytesRead += bytesRead;
+    ...itd...
+- Komandu 'insert' realizovati pomocu lseek() sistemskog poziva (man 2 lseek)
+    i) otvorite fajl za pisanje sa open() (man 2 open)
+    ii) uradite lseek() za prosledjeni broj bajtova
+    iii) upisete rec sa write() (man 2 write) i zatvorite fajl sa close() 
+        (man 2 close)
+- Za ostale komande jednostavno konsultujte primere sa casa :)
+
+2) Dodati novu komandu u prethodni zadatak. Komanda
+treba da ispise informacije o fajlu:
+-----------------------------------------------
+./fshell
+% info 1.txt
+Type: regular file 
+Owner: korisnik 
+Group: korisnikova_grupa 
+Size: 127
+Access: 0644
+% info direktorijum_a
+Type: directory 
+Owner: korisnik 
+Group: korisnikova_grupa 
+Size: 4096
+Access: 0755
+-----------------------------------------------
+Dakle, komadna je 'info' i prima putanju do fajla (na UNIX sistemima sve je fajl!).
+
+Pomoc pri resavanju
+===================
+Potrebno je primeniti stat sistemski poziv na prosledjenu putanju (man 2 stat). 
+U polju 'st_gid' strukture 'struct stat' nalazi se identifikator vlasnicke grupe.
+Da bi se uz pomoc ovog identifikatora dobila informacija o nazivu grupe potrebno 
+je pozvati f-ju 'getgrgid()'. Za detalje o ovoj f-ji man 3 getgrgid. Naziv se nalazi
+u polju 'gr_name' strukture koju f-ja vraca ('struct group').
