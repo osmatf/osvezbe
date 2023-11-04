@@ -4,10 +4,10 @@ sistemskog poziva lseek.
 
 Napomena:
 - ovo je pogresan nacin za izracunavanje velicine fajla.
-Da bi program radio, neophodno je pravo citanja nad zadatim fajlom,
-sto ne bi trebalo da bude slucaj, jer zapravo ne citamo sadrzaj fajla.
-Ovaj problem se prevazilazi koriscenjem sistemskog poziva stat
-koji cemo raditi na sledecem casu.
+Da bi program radio, neophodno je pravo citanja nad
+zadatim fajlom, sto ne bi trebalo da bude slucaj,
+jer zapravo ne citamo sadrzaj fajla, već meta informacije
+o njemu. Za velicinu fajla koristimo sistemski poziv stat.
 
 Poziv programa:
 ./filesize filename
