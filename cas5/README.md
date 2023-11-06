@@ -3,6 +3,7 @@
 Čas pokriva:
 - obilazak direktorijuma (nftw)
 - funkcije za rad sa vremenima
+- vežbanje gradiva sa prethodnih časova
 
 TLPI poglavlja:
 - 18 - deo o nftw
