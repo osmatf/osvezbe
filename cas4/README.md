@@ -8,3 +8,6 @@
 TLPI poglavlja:
 - 15.4.6, 15.4.7
 - 18.1, 18.2, 18.3, 18.8
+
+Korisno:
+- komandom `ln` se mogu kreirati hard linkovi. Komandom `ln -s` se mogu kreirati simbolički linkovi. Može biti korisno zarad testiranja na ispitu.
