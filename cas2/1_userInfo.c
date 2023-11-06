@@ -16,10 +16,8 @@ Poziv programa:
 #include <stdint.h>
 #include <stdbool.h>
 
-/* neophodno zaglavlje prilikom rada sa funkcijama 
- * koje citaju passwd fajl
- * 
- * man 5 passwd za detelje o passwd fajlu
+/* Neophodno zaglavlje prilikom rada sa funkcijama 
+ * koje citaju passwd fajl.
  */
 #include <pwd.h>
 
@@ -37,22 +35,21 @@ static char* osUsage = "./userInfo username";
 /* funkcija ispisuje informacije o korisniku iz passwd fajla */
 bool os_get_user_info(const char* username, FILE* outStream) {
 	
-	/* citamo informacije iz passwd fajla o korisniku sa
-	 * korisnickim imenom username
-	 * funkcija getpwnam vraca pokazivac na staticki alociranu strukturu
-	 * TLPI za detalje
+	/* Citamo informacije iz passwd fajla o korisniku sa
+	 * korisnickim imenom username.
+	 * Funkcija getpwnam vraca pokazivac na staticki alociranu strukturu.
 	 * 
-	 * BITNO: strukturu nikada ne smete eksplicitno da oslobadjate
+	 * BITNO: Ovu strukturu nikada ne smemo eksplicitno da oslobadjamo
 	 */ 
 	struct passwd* userInfo = getpwnam(username);
-	/* u slucaju greske ili nepostojanja podataka u passwd fajlu o 
+	/* U slucaju greske ili nepostojanja podataka u passwd fajlu o 
 	 * korisniku sa imenom username funkcija getpwnam vraca NULL
 	 * i postavlja errno na odgovarajucu vrednost 
 	 */
 	if (userInfo == NULL)
 		return false;
 	
-	/* ispisujemo informacije koje postoje u passwd  fajlu korisniku */
+	/* Ispisujemo informacije koje postoje u passwd fajlu o korisniku */
 	fprintf(outStream, "User name: %s\n", userInfo->pw_name);
 	fprintf(outStream, "Numerical user id: %jd\n", (intmax_t)userInfo->pw_uid);
 	fprintf(outStream, "Numerical group id: %jd\n", (intmax_t)userInfo->pw_gid);
