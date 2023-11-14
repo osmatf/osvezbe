@@ -1,9 +1,8 @@
 /*
 Program demonstrira kreiranje novih procesa. Nakon kreiranja,
 roditelj treba da ispise svoj PID i PID svog deteta, a dete
-svoj PID i PID svog roditelja. Nakon toga, oba procesa ispisuju istu poruku.
-Dodatno, dete poziva exit da bi zavrsilo izvrsavanje, dok roditelj ceka 
-da dete zavrsi svoj rad.
+svoj PID i PID svog roditelja. Dodatno, dete poziva exit da bi
+zavrsilo izvrsavanje, dok roditelj ceka da dete zavrsi svoj rad.
 */
 
 #include <sys/types.h>
