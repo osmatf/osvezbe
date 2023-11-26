@@ -10,3 +10,6 @@ TLPI poglavlja:
 - 26.1, 26.1.1, 26.1.2, 26.1.3, 26.2
 - 27, 27.1, 27.2, 27.4
 - 44, 44.1, 44.2, 44.3, 44.4
+
+Korisno:
+- komandom `ps aux` se ispisuju svi procesi na sistemu, kao o neke korisne informacije o njima (recimo da li se trenutno izvrsavaju, koji im je PID, itd...).
