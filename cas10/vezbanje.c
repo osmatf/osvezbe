@@ -1,8 +1,6 @@
 /*
-Napisati program koji kao argument komandne linije dobija putanju do regularnog fajla. Program treba da čita
-fajl liniju po liniju. Ukoliko linija nije zaključana, program treba da je upiše u fajl čija se putanja zadaje kao drugi
-argument komandne linije. Na kraju rada program treba da ispiše ukupan broj linija koje su upisane. Linija neće
-biti duža od 255 karaktera.
+Napisati program koji preko promenljive okruzenja PUTANJA dobija putanju do fajla. Program treba da čita
+fajl rec po rec i prebroji reci koje nisu zakljucane. Rec nece biti duza od 128 karaktera.
 */
 #define _XOPEN_SOURCE 700
 #include <sys/types.h>
@@ -29,25 +27,24 @@ biti duža od 255 karaktera.
     }\
   } while (0)
 
-#define MAX_SIZE (1024)
+#define MAX_SIZE (128)
 
 int main(int argc, char** argv) {
+    check_error(argc == 1, "./a.out");
 
-    check_error(argc == 3, "...");
-    //otvaramo fajl za citanje i pisanje
-    int fd = open(argv[1], O_RDWR);
-    check_error(fd != -1, "...");
+    char *putanja = getenv("PUTANJA");
+    check_error(putanja != NULL, "promenljiva okruzenja PUTANJA nije postavljena");
+
+    int fd = open(putanja, O_RDWR);
+    check_error(fd != -1, "open");
 
     FILE* f = fdopen(fd, "r+");
-    check_error(f != NULL, "...");
-
-    FILE *output = fopen(argv[2], "w");
-    check_error(output != NULL, "fopen");
+    check_error(f != NULL, "fdopen");
 
     char buffer[MAX_SIZE];
-    int numLines = 0;
+    int num = 0;
     //citamo rec po rec u fajlu
-    while (fgets(buffer, MAX_SIZE, f) != NULL) {
+    while (fscanf(f, "%s", buffer) == 1) {
         //struktura koja opisuje katanac
         struct flock lock;
         lock.l_type = F_WRLCK;
@@ -59,27 +56,24 @@ int main(int argc, char** argv) {
 
         //ukoliko je uspesno postavljen katanac
         if (retVal != -1) {
-            fprintf(output, "%s", buffer);
-            //povecavamo broj linija
-            numLines++;
-            //otkljucavamo zakljucanu liniju
+            //povecavamo broj
+            num++;
+            //otkljucavamo zakljucanu rec
             lock.l_type = F_UNLCK;
-            check_error(fcntl(fd, F_SETLK, &lock) != -1, "....");
+            check_error(fcntl(fd, F_SETLK, &lock) != -1, "unlocking failed");
         }
         else {
             if (errno != EACCES && errno != EAGAIN) {
-                
-                check_error(0, "...");
+                check_error(0, "locking failed");
             }
             //ukoliko nije postavljen katanac jer neko drugi ima katanac, idemo dalje
             continue;
         }
     }
 
-    printf("%d\n", numLines);
+    printf("%d\n", num);
 
     fclose(f);
-    fclose(output);
 
     exit(EXIT_SUCCESS);
 }
