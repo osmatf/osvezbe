@@ -37,6 +37,8 @@ int main(int argc, char** argv) {
         if(strcmp(dir_entry->d_name, ".") != 0 && strcmp(dir_entry->d_name, "..") != 0){
             printf("%s\n", dir_entry->d_name);
         }
+        /* errno moramo postaviti na 0 pre svakog sledeceg poziva funkcije readdir */
+        errno = 0;
     }
     /* kada izadjemo iz petlje ne znamo da li je to zato sto smo obisli ceo direktorijum
      * ili zato sto je nastala greska pri citanju. Zato moramo obraditi errno 
