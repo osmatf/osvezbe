@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
         errno = 0;
     }
     /* kada izadjemo iz petlje ne znamo da li je to zato sto smo obisli ceo direktorijum
-     * ili zato sto je nastala greska pri citanju. Zato moramo obraditi errno 
+     * ili zato sto je nastala greska pri citanju. Zato moramo obraditi errno.
      */
     check_error(errno == 0, "readdir");
     /* zatvaramo direktorijum*/

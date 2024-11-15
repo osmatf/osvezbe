@@ -1,5 +1,4 @@
-/* Program obilazi direktorijum i racuna njegovu velicinu,
- * bez pravljenja pomocnih putanja
+/* Program obilazi direktorijum i racuna njegovu velicinu
  *
  * Primer poziva:
  * ./sizeOfDir dirPath
@@ -26,11 +25,11 @@
 		}\
 	} while(0)
 
-
 void sizeOfDir(char* putanja, unsigned* psize) {
-	/* citamo informacije o trenutnom fajlu */
+	/* citamo informacije o trenutnom fajlu */	
 	struct stat fInfo;
 	check_error(lstat(putanja, &fInfo) != -1, "...");
+	
 	/* dodajemo velicinu fajla na tekuci zbir */
 	*psize += fInfo.st_size;
 	
@@ -40,55 +39,48 @@ void sizeOfDir(char* putanja, unsigned* psize) {
 		return;
 	}
 	
-	char* dirPath = realpath(putanja, NULL);
-	printf("Dir: %s\n", dirPath);
-	free(dirPath);
-	
 	/* ako je u pitanju dirketorijum, otvaramo ga */
 	DIR* dir = opendir(putanja);
 	check_error(dir != NULL, "...");
-	
-	/* da ne bismo rucno pravili putanje, mozemo da promenimo
-	 * pwd i da udjemo u direktorijum
-	 */
-	check_error(chdir(putanja) != -1 , "...");
 	
 	/* u petlji citamo sadrzaj direktorijuma */
 	struct dirent* dirEntry = NULL;
 	errno = 0;
 	while ((dirEntry = readdir(dir)) != NULL) {
-		
-		char* fajl = realpath(dirEntry->d_name, NULL);
-		printf("\tFajl: %s: %s\n", fajl, dirEntry->d_name);
-		
-		free(fajl);
-		/* u slucaju da se radi o "." ili ".." direktorijumima, moramo da ih preskocimo,
-		 * jer u suprotnom upadamo u beskoacnu rekurziju
+		/* dinamicki alociramo prostor za novu putanju */
+		char* path = malloc(strlen(putanja) + strlen(dirEntry->d_name) + 2);
+		check_error(path != NULL, "...");
+
+		strcpy(path, putanja);
+		strcat(path, "/");
+		strcat(path, dirEntry->d_name);
+
+		/* u slucaju da se radi o "." ili ".." direktorijumima, MORAMO da ih preskocimo,
+		 * jer u suprotnom upadamo u beskonacnu rekurziju
 		 */ 
 		if (!strcmp(dirEntry->d_name, ".") || !strcmp(dirEntry->d_name, "..")) {
 			/* iako ih preskacemo, to ne znaci da treba da ih iskljucimo iz razmatranja */
 			
 			/* citamo informacije o fajlu */
-			check_error(stat(dirEntry->d_name, &fInfo) != -1, "...");
-			
+			check_error(stat(path, &fInfo) != -1, "...");
 			/*dodajemo velicinu fajla na tekuci zbir */
 			*psize += fInfo.st_size;
 			
+			free(path);
 			errno = 0;
 			/* i prelazimo na sledeci fajl u direktorijumu */
 			continue;
 		}
 		/* ako se ne radi o "." i ".." , rekurzivno pozivamo funkciju i obradjujemo fajl */
-		sizeOfDir(dirEntry->d_name, psize);
+		sizeOfDir(path, psize);
+		free(path);
 		
 		errno = 0;
 	}
 	
-	check_error(errno != EBADF, "...");
-	/* napustamo direktorijum koji smo obisli */
-	check_error(chdir("..") != -1, "...");
+	check_error(errno != EBADF, "readdir");
 	/* zatvaramo direktorijum */
-	check_error(closedir(dir) != -1, "closedir");
+	check_error(closedir(dir) != -1, "...");	
 }
 
 int main(int argc, char** argv) {
