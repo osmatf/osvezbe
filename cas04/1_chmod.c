@@ -39,7 +39,9 @@ int main(int argc, char** argv) {
 	
 	close(fd);
 	
-	//menjaju mu se prava pristupa
+	/* menjamo prava pristupa fajlu.
+	 * BITNO: fajl mora da postoji da bi poziv uspeo 
+	 */
 	check_error(chmod(argv[1], prava) != -1, "chmod");
 	
 	exit(EXIT_SUCCESS);
