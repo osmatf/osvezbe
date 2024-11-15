@@ -37,10 +37,12 @@ void os_truncate(const char* filePath) {
 	struct stat fInfo;
 	check_error(stat(filePath, &fInfo) != -1, "stat failed");
 	
-	/* brisemo sadrzaj fajla tako sto ga otvorimo u modu za pisanje */
-	FILE* f = fopen(filePath, "w");
-	check_error(f != NULL, "fopen failed");
-	fclose(f);
+	/* brisemo sadrzaj fajla (O_TRUNC). Isti efekat se mogao 
+	 * postici pozivom fopen(filePath, "w") ili truncate/ftruncate.
+	 */
+	int fd = open(filePath, O_WRONLY | O_TRUNC);
+	check_error(fd != -1, "fopen failed");
+	close(fd);
 	
 	/* upisujemo podatke o prethodnom vremenu pristupa i modifikacije
 	 * u strukturu utimbuf
