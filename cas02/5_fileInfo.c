@@ -107,31 +107,11 @@ char* os_get_group_info_gid(gid_t gid) {
 }
 
 /* funkcija kreira string reprezentaciju informacija o fajlu 
- * BITNO:
- * drugi argument funkcije je pokazivac na pokazivac da bismo mogli
- * da upisemo adresu dinamicki alociranog bloka memorije na heap-u
- * 
- * upotreba obicnog pokazivaca je pogresna, jer bismo adresu upisali u 
- * lokalnu kopiju vrednosti iz main-a i brisanjem stek okvira funkcije
- * bismo izgubili adresu alociranog bloka, tj. doslo bi do curenja memorije
  */
-void os_file_info(const char* filePath, char** fileInfoStr) {
-	
-	/* postavljamo errno na Invalid argument */
-	errno = EINVAL;
-	check_error(*fileInfoStr == NULL, "String must be NULL initialized");
-	/* ako je sve ok, vracamo errno na podrazumevanu vrednost */
-	errno = 0;
-	
-	/* alociramo blok i derefenciranjem pokazivaca upisujemo 
-	 * adresu alociranog bloka direktno u promenljivu u mainu
-	 */ 
-	*fileInfoStr = malloc(MAX_SIZE);
-	check_error(*fileInfoStr != NULL, "alllocation failed");
-	/* ako je sve ok, pravimo lokalnu kopiju pokazivaca na alocirani
-	 * blok
-	 */ 
-	char* fileStr = *fileInfoStr;
+char *file_information(const char* filePath) {
+	/* alociramo memoriju neophodnu za string */
+	char *fileInfoStr = malloc(MAX_SIZE);
+	check_error(fileInfoStr != NULL, "alllocation failed");
 	
 	/* informacije o fajlu se dobijaju upotrebo funkcije stat
 	 * man 2 stat
@@ -147,7 +127,7 @@ void os_file_info(const char* filePath, char** fileInfoStr) {
 	char* filePrivileges = "-rwxrwxrwx ";
 	
 	/* kopiramo privilegije u dinamicki alocirani string na heap-u */
-	strcpy(fileStr, filePrivileges);
+	strcpy(fileInfoStr, filePrivileges);
 	
 	/* otkrivamo koji je tip fajla u pitanju 
 	 * 
@@ -155,55 +135,54 @@ void os_file_info(const char* filePath, char** fileInfoStr) {
 	 * voditi racuna o makroima S_IFREG i S_ISREG(fmt) i tome sta koji
 	 * od njih predstavlja
 	 * 
-	 * man 2 stat i TLPI za detalje
+	 * man 2 stat i man 7 inode, TLPI za detalje
 	 */ 
 	switch (fInfo.st_mode & S_IFMT) {
-		
 		case S_IFSOCK:
-			fileStr[0] = 's';
+			fileInfoStr[0] = 's';
 			break;
 		case S_IFLNK:
-			fileStr[0] = 'l';
+			fileInfoStr[0] = 'l';
 			break;
 		case S_IFREG:
-			fileStr[0] = '-';
+			fileInfoStr[0] = '-';
 			break;
 		case S_IFBLK:
-			fileStr[0] = 'b';
+			fileInfoStr[0] = 'b';
 			break;
 		case S_IFCHR:
-			fileStr[0] = 'c';
+			fileInfoStr[0] = 'c';
 			break;
 		case S_IFDIR:
-			fileStr[0] = 'd';
+			fileInfoStr[0] = 'd';
 			break;
 		case S_IFIFO:
-			fileStr[0] = 'f';
+			fileInfoStr[0] = 'f';
 			break;
 	}
 	
 	
 	/* otkrivamo koje privilegije poseduje fajl */
 	if (!(fInfo.st_mode & S_IRUSR))
-		fileStr[1] = '-';
+		fileInfoStr[1] = '-';
 	if (!(fInfo.st_mode & S_IWUSR))
-		fileStr[2] = '-';
+		fileInfoStr[2] = '-';
 	if (!(fInfo.st_mode & S_IXUSR))
-		fileStr[3] = '-';
+		fileInfoStr[3] = '-';
 	
 	if (!(fInfo.st_mode & S_IRGRP))
-		fileStr[4] = '-';
+		fileInfoStr[4] = '-';
 	if (!(fInfo.st_mode & S_IWGRP))
-		fileStr[5] = '-';
+		fileInfoStr[5] = '-';
 	if (!(fInfo.st_mode & S_IXGRP))
-		fileStr[6] = '-';
+		fileInfoStr[6] = '-';
 	
 	if (!(fInfo.st_mode & S_IROTH))
-		fileStr[7] = '-';
+		fileInfoStr[7] = '-';
 	if (!(fInfo.st_mode & S_IWOTH))
-		fileStr[8] = '-';
+		fileInfoStr[8] = '-';
 	if (!(fInfo.st_mode & S_IXOTH))
-		fileStr[9] = '-';
+		fileInfoStr[9] = '-';
 		
 	/* trenutni broj upisanih karaktera u dinamicki alociranom stringu */
 	unsigned offset = 11;
@@ -216,14 +195,14 @@ void os_file_info(const char* filePath, char** fileInfoStr) {
 	 * uvecamo offset da bismo mogli da se praivlno pozicioniramo za 
 	 * naredni upis
 	 */
-	offset += sprintf(fileStr + offset, "%ju ", (uintmax_t)fInfo.st_nlink);
+	offset += sprintf(fileInfoStr + offset, "%ju ", (uintmax_t)fInfo.st_nlink);
 	
 	/* iz passwd fajla citamo ime korisnika na osnovu njegovog
 	 * numerickog id-a
 	 */ 
 	char* userName = os_get_user_info_uid(fInfo.st_uid);
 	check_error(userName != NULL, "User info error");
-	offset += sprintf(fileStr + offset, "%s ", userName);
+	offset += sprintf(fileInfoStr + offset, "%s ", userName);
 	/* BITNO: 
 	 * nakon upotrebe treba da obrisemo dinamicki 
 	 * alocirani string
@@ -235,7 +214,7 @@ void os_file_info(const char* filePath, char** fileInfoStr) {
 	 */
 	char *groupName = os_get_group_info_gid(fInfo.st_gid);
 	check_error(groupName != NULL, "Group info failed");
-	offset += sprintf(fileStr + offset, "%s ", groupName);
+	offset += sprintf(fileInfoStr + offset, "%s ", groupName);
 	/* BITNO: 
 	 * nakon upotrebe treba da obrisemo dinamicki 
 	 * alocirani string
@@ -243,35 +222,36 @@ void os_file_info(const char* filePath, char** fileInfoStr) {
 	free(groupName);
 	
 	/* stampamo velicinu fajla */
-	offset += sprintf(fileStr + offset, "%jd ", (intmax_t)fInfo.st_size);
+	offset += sprintf(fileInfoStr + offset, "%jd ", (intmax_t)fInfo.st_size);
 	
 	/* stampamo vreme poslednje modifikacije fajla */
 	time_t seconds = fInfo.st_mtime;
 	/* da bismo dobili vreme u citljivom formatu koristimo 
 	 * funkciju ctime(...)
 	 */
-	offset += sprintf(fileStr + offset, "%s ", ctime(&seconds));
+	offset += sprintf(fileInfoStr + offset, "%s ", ctime(&seconds));
 	
 	/* stampamo putanju do fajla */
-	offset += sprintf(fileStr + offset - 2, " %s", filePath);
+	offset += sprintf(fileInfoStr + offset - 2, " %s", filePath);
+
+	return fileInfoStr;
 }
 
 int main(int argc, char** argv) {
-	
+
 	check_error(argc == 2, osUsage);
-	/* string inicijalizujemo sa NULL,
-	 * tj. eksplicitno ga obelezavamo kao neinicijalizovanog
-	 */ 
-	char* fileInfoStr = NULL;
+
 	/* kreiramo string reprezentaciju informacija o fajlu */
-	os_file_info(argv[1], &fileInfoStr);
+	char *file_info = file_information(argv[1]);
+
 	/* stampamo string */
-	printf("%s\n", fileInfoStr);
+	printf("%s\n", file_info);
+
 	/* BITNO:
 	 * sve sto je dinamicki alocirano, mora da bude oslobodjeno
 	 * u suprotnom imamo curenje memorije u programu
 	 */ 
-	free(fileInfoStr);
+	free(file_info);
 	
 	exit(EXIT_SUCCESS);
 }
