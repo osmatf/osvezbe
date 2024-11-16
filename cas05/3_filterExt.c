@@ -39,7 +39,7 @@ int filterByExt(const char* fpath, const struct stat* sb, int typeflag, struct F
 		
 		/* pronalazimo tacku u imenu fajla */
 		char* fExt = strrchr(fpath + ftwbuf->base, '.');
-		/* obavezna provera da li je povratna vrednost null pre poredjenja
+		/* obavezna provera da li je povratna vrednost NULL pre poredjenja
 		 * seg fault u suprotnom
 		 */
 		if (fExt != NULL && !strcmp(fExt, ext)) {

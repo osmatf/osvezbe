@@ -34,19 +34,20 @@
 
 int days = 0;
 
-/* pokazivac na funkciju kojom se obradjuje svaki fajl na koji nftw naidje */
+/* Pokazivac na funkciju kojom se obradjuje svaki fajl na koji nftw naidje.
+ * Deklaraciju ove funkcije mozete kopirati iz `man nftw`
+ */
 int filterByTime(const char* fpath, const struct stat* sb, int typeflag, struct FTW* ftwbuf) {
-	
 	/* citanje trenutnog vremena */
 	time_t now = time(NULL);
 	/* racunanje pre koliko dana je bila poslednja promena */
 	time_t diffInSec = now - sb->st_mtime;
-	
+
 	/* ako je promena bila u poslednjih days dana */
 	if (diffInSec/DAY_IN_SEC < days)
 		/* ispisati ime fajla */
 		printf("%-80s\n", fpath);
-	
+
 	/* povratna vrednost funkcije razlicita od 0 signalizira gresku i prekida rekurziju */
 	return 0;
 }
