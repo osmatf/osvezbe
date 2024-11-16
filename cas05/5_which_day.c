@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
      * "razbijenog" vremena.
      *
      * NAPOMENA: funkcije za rad sa vremenom koriste staticki alociranu memoriju,
-     * tako da svi pozivi ovih funkcija odrzavaju strukturu tm koju nam vraca localtime.
+     * tako da svi pozivi ovih funkcija odrzavaju jednu istu strukturu tm koju nam vraca localtime.
      * U ovom slucaju, poziv mktime, osim sto vraca broj sekundi koji predstavlja novo vreme,
      * azurira i polja tm_wday i tm_yday iz strukture tm, na koju mi vec imamo pokazivac brokenTime.
      * Dakle, nije neophodno da ponovo pozivamo localtime (ali nije ni pogresno).
