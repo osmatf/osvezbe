@@ -32,7 +32,12 @@ int main(int argc, char** argv) {
 	
   /* Procitati u TLPI deo 27.2 (The exec() library functions)*/
 	check_error(execlp("ls", "ls", "-l", NULL) != -1, "exec failed");
-	
+
+  /* Naredni deo koda se nikada nece izvrsiti.
+   * U slucaju da execlp uspe, trenutni program se u potpunosti zamenjuje
+   * sa programom ls tako da ovaj kod vise ni ne postoji od trenutka execlp-a.
+   * U slucaju da execlp ne uspe, check_error ce ubiti program (pozvace exit). 
+   */
   printf("Ovaj deo koda se ne izvrsava\n");
 
 	exit(EXIT_SUCCESS);

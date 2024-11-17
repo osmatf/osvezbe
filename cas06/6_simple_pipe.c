@@ -50,11 +50,9 @@ int main(int argc, char** argv) {
 	 * pa je svaki od njih duzan da zatvori onu stranu koja mu ne treba.
 	 */
 	pid_t childPid = fork();
-	
 	check_error(childPid != -1, "fork failed");
 	
 	if (childPid > 0) { // parent branch
-		
 		/* parent zatvara granu koja mu ne treba */
 		close(pipeFds[READ_END]);
 		

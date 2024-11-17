@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
 		 * 
 		 * BITNO:
 		 * nakon svakog forka, neophodno je sacekati da se dete zavrsi
-		 */ 		
+		 */ 
 		check_error(wait(NULL) != -1, "wait failed");
 	}
 	else { // child branch

@@ -2,12 +2,12 @@
 U ovom primeru se prvo kreira dete koje izvrsava komandu `ls -al`, a potom roditelj
 ispisuje poruku na standardni izlaz. 
 Postavlja se pitanje zasto se prvo ispise poruka roditelja,
-a tek onda sadrzaj komande `ls -al`. Takodje, s obzirom da na kraju
+a tek onda sadrzaj komande `ls -al`. Takodje, s obzirom da na kraju ispisa u terminalu
 nema prompt-a shell-a, da li to znaci da smo se zaglavili negde?
 
 Razlog tome je sto nismo uradili wait i desice se da roditelj prvi
-zavrsi svoj rad (ispise poruku i exit-uje). Kao odgovor na to shell 
-ispise prompt na terminalu. Nakon toga dete poziva `ls -al` i ispisuje
+zavrsi svoj rad (ispise poruku "Hello from parent" i exit-uje). Kao odgovor na to shell 
+ispise prompt na terminalu i ceka novu komandu. Nakon toga dete poziva `ls -al` i ispisuje
 se sadrzaj na stdout koji je vezan za isti terminal za koji su vezani
 shell i roditeljski proces. Nakon toga mozemo uneti novu komandu shell-u,
 jer su i roditelj i dete zavrsili rad, samo sto prompt ne stoji u terminalu.
