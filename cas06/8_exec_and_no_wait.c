@@ -40,6 +40,7 @@ int main(int argc, char** argv) {
 		check_error(-1 != execlp("ls", "ls", "-al", NULL), "execl");
 	}
 
+  /* Dodati wait pre naredne linije. */
 	printf("Hello from parent\n");
 
 	exit(EXIT_SUCCESS);
