@@ -37,12 +37,7 @@ int main(int argc, char** argv) {
 	char buf[MAX_SIZE];
 	int len = strlen("Milivoje");
 	
-	while (!feof(f)) {
-		
-		char* error;
-		// citamo rec po rec
-		fscanf(f, "%s", buf);
-		
+	while (fscanf(f, "%s", buf) == 1) {
 		// ako nije Milivoje, prelazimo na sledecu rec
 		if (strcmp(buf, "Milivoje")) {
 			continue;
