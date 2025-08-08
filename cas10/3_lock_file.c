@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
 
     char buffer[MAX_SIZE];
     int numLines = 0;
-    //citamo rec po rec u fajlu
+    //citamo liniju po liniju u fajlu
     while (fgets(buffer, MAX_SIZE, f) != NULL) {
         //struktura koja opisuje katanac
         struct flock lock;
