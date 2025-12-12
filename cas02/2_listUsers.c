@@ -48,7 +48,8 @@ int main(int argc, char **argv)
      * getpwent().
      *
      * Funkcija vraca NULL ako dodje do kraja fajla ili ako se dogodi greska.
-     * Za proveru gresaka mora da se koristi errno promenljiva. Ovde cemo taj deo preskociti.
+     * Za proveru gresaka mora da se koristi errno promenljiva.
+     * U ovom zadatku cemo taj deo preskociti.
      */
     while ((currentUser = getpwent()) != NULL) {
 
