@@ -8,14 +8,9 @@ Poziv programa:
 ./a.out <prefix>
 */
 #define _XOPEN_SOURCE 700
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 #include <errno.h>
 #include <pwd.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
