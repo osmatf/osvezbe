@@ -46,7 +46,7 @@ int is_same_home(const char *username1, const char *username2)
      * (videti man getpwnam). Zbog toga ce drugi poziv funkcije getpwnam
      * pregaziti podatke na koje pokazuje user_info1.
      *
-     * */
+     */
     struct passwd *user_info1 = getpwnam(username1);
     check_error(user_info1 != NULL, "getpwnam");
 
@@ -59,7 +59,16 @@ int is_same_home(const char *username1, const char *username2)
     struct passwd *user_info2 = getpwnam(username2);
     check_error(user_info2 != NULL, "getpwnam");
 
-    return (strcmp(user1_home_dir, user_info2->pw_dir) == 0);
+    int is_home_same = (strcmp(user1_home_dir, user_info2->pw_dir) == 0);
+
+    /**
+     * Obavezno osloboditi memoriju pre izlaska iz funkcije.
+     * U suportnom, nakon vracanja u main, program nece imati informaciju
+     * o tome gde se nalaze bajtovi na koje pokazuje user1_home_dir.
+     */
+    free(user1_home_dir);
+
+    return is_home_same;
 }
 
 /**
