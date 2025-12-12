@@ -12,10 +12,11 @@ Poziv programa:
 
 #include <grp.h>
 
-#define check_error(cond, userMsg)                                                                 \
+#define check_error(cond, msg)                                                                     \
     do {                                                                                           \
         if (!(cond)) {                                                                             \
-            fprintf(stderr, "Greska: %s\n", userMsg);                                              \
+            perror(msg);                                                                           \
+            fprintf(stderr, "File: %s\nFunction: %s\nLine: %d\n", __FILE__, __func__, __LINE__);   \
             exit(EXIT_FAILURE);                                                                    \
         }                                                                                          \
     } while (0)

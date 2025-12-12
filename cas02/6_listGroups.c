@@ -1,50 +1,52 @@
 /*
-Program koji ispisuje informacije o svim grupama na sistemu.
+Ispisati nazive svih grupa koje imaju vise od n clanova.
+Broj n se zadaje kao argument komandne linije.
+
+Poziv programa:
+./a.out n
 */
-
 #define _XOPEN_SOURCE 700
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-
+#include <grp.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <grp.h>
+#define check_error(cond, msg)                                                                     \
+    do {                                                                                           \
+        if (!(cond)) {                                                                             \
+            perror(msg);                                                                           \
+            fprintf(stderr, "File: %s\nFunction: %s\nLine: %d\n", __FILE__, __func__, __LINE__);   \
+            exit(EXIT_FAILURE);                                                                    \
+        }                                                                                          \
+    } while (0)
 
-#define check_error(cond,userMsg)\
-	do {\
-		if (!(cond)) {\
-			fprintf(stderr,"Greska: %s\n",userMsg);\
-			exit(EXIT_FAILURE);\
-		}\
-	} while (0)
+int number_of_members(const struct group *group_info)
+{
+    int i = 0;
+    while (group_info->gr_mem[i] != NULL) {
+        i++;
+    }
 
-void print_group(struct group* groupInfo) {
-	
-	printf("***************************************************************\n");
-	printf("Group name: %s\n", groupInfo->gr_name);
-	printf("Group password: %s\n", groupInfo->gr_passwd);
-	printf("Group ID: %d\n", (int)groupInfo->gr_gid);
-	for (int i = 0; groupInfo->gr_mem[i] != NULL; i++) {
-			
-			printf("\t%s\n", groupInfo->gr_mem[i]);
-	}
+    return i;
 }
-int main(int argc, char** argv) {
-	
-	check_error(argc == 1, "...");
-	
-	setgrent();
-	
-	struct group* currGroup = NULL;
-	while ((currGroup = getgrent()) != NULL){
-		
-		print_group(currGroup);
-	}
-	
-	endgrent();
-	
-	exit(EXIT_SUCCESS);
+
+int main(int argc, char **argv)
+{
+    check_error(argc == 2, "./a.out n");
+
+    int n = atoi(argv[1]);
+
+    setgrent();
+
+    struct group *current_group = NULL;
+
+    while ((current_group = getgrent()) != NULL) {
+
+        if (number_of_members(current_group) > n) {
+            printf("%s\n", current_group->gr_name);
+        }
+    }
+
+    endgrent();
+
+    exit(EXIT_SUCCESS);
 }
