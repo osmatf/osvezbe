@@ -14,7 +14,7 @@ Poziv programa:
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 #define UNUSED(x) ((void)x)
 
 #define check_error(cond, msg)                                                                     \
@@ -63,6 +63,35 @@ int starts_with(const char *name, const char *prefix)
     return 1;
 }
 
+/**
+ * Izdvaja naziv direktorijuma iz zadate putanje.
+ *
+ * Funkcija pronalazi poslednji karakter '/' u zadatoj putanji
+ * i vraća pokazivač na deo niske koji predstavlja naziv
+ * direktorijuma.
+ *
+ * Primeri:
+ *   "/home/user/projects"  -> "projects"
+ *   "/usr/local/bin"       -> "bin"
+ *   "src/include/utils"    -> "utils"
+ *   "documents"            -> "documents"
+ *   "/"                    -> "/"
+ * Napomena1: pretpostavka je da se putanja nece zavrsavati sa '/'.
+ *
+ * Napomena2: Vraćena vrednost pokazuje na deo ulazne niske i ne sme
+ * se oslobađati ili menjati.
+ */
+const char *extract_dir_name(const char *dir_path)
+{
+    /* ukoliko je u pitanju direktorijum "/", vracamo ga */
+    if (strcmp(dir_path, "/") == 0) {
+        return dir_path;
+    }
+    char *last_slash = strrchr(dir_path, '/');
+
+    return (last_slash == NULL) ? dir_path : (last_slash + 1);
+}
+
 int main(int argc, char **argv)
 {
     check_error(argc == 2, "./a.out prefix");
@@ -78,7 +107,9 @@ int main(int argc, char **argv)
     errno = 0;
     while ((currentUser = getpwent()) != NULL) {
         if (starts_with(currentUser->pw_name, argv[1])) {
-            printf("%s: %s\n", currentUser->pw_name, currentUser->pw_dir);
+            const char *dir_name = extract_dir_name(currentUser->pw_dir);
+
+            printf("%s: %s\n", currentUser->pw_name, dir_name);
         }
 
         errno = 0;
