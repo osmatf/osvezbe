@@ -54,6 +54,20 @@ int main(int argc, char **argv)
     } else {
         /* Ispisujemo informacije koje postoje u passwd fajlu o korisniku */
         printf("User name: %s\n", userInfo->pw_name);
+        /*
+         * Tip intmax_t predstavlja CELOBROJNI tip koji može da smesti
+         * najveću moguću vrednost od svih standardnih celobrojnih tipova.
+         *
+         * Zašto je poželjno koristiti intmax_t pri ispisu user ID-a (pw_uid):
+         *
+         * - Tip pw_uid (uid_t) NIJE garantovano istog tipa na svim sistemima.
+         *
+         * - Format specifikator %jd je standardni način da se ispiše intmax_t.
+         *
+         * Prednosti ovog pristupa:
+         * - prenosivost koda između različitih UNIX/Linux sistema
+         * - izbegavanje pretpostavki o veličini i znaku uid_t
+         */
         printf("Numerical user id: %jd\n", (intmax_t)userInfo->pw_uid);
         printf("Numerical group id: %jd\n", (intmax_t)userInfo->pw_gid);
         printf("Comment: %s\n", userInfo->pw_gecos);
