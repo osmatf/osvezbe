@@ -2,18 +2,15 @@
 Napisati program koji kopira fajl sa jedne lokacije na drugu.
 
 Poziv programa:
-./os_cp destination_file source_file
+./a.out destPath srcPath
 */
+#include <errno.h>
 #include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-#include <errno.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 #define check_error(cond, msg)                                                                     \
     do {                                                                                           \

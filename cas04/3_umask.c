@@ -69,11 +69,9 @@ int main(int argc, char **argv)
      * open poziv pri cemu ce postaviti errno na EEXIST
      */
     int fd = open(argv[1], O_WRONLY | O_CREAT | O_EXCL, mode);
-    /* ispitujemo da li je pukao open poziv */
     if (fd == -1) {
-        /* ako je uzrok pucanja fajla njegovo postojanje */
+        /* ako je open pukao zato sto fajl vec postoji */
         if (errno == EEXIST) {
-
             printf("Fajl vec postoji\n");
 
             /* prava pristupa menjamo pomocu funkcije chmod */
@@ -81,13 +79,11 @@ int main(int argc, char **argv)
         }
         /* ako je bilo sta drugo uzrok pucanja open poziva, prekidamo izvrsavanje */
         else {
-
             check_error(0, "file open failed");
         }
     }
     /* ako smo otvorili fajl */
     else {
-
         /* potrebno je da ga zatvorimo */
         close(fd);
     }
@@ -95,6 +91,5 @@ int main(int argc, char **argv)
     /* na kraju vracamo staru vrednost umaska */
     umask(oldUmask);
 
-    /* zavrsavamo program sa odgovarajucim statusom */
     exit(EXIT_SUCCESS);
 }
