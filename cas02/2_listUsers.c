@@ -1,6 +1,20 @@
 /*
 Program koji ispisuje informacije o svim korisnicima na sistemu.
 */
+
+/* _XOPEN_SOURCE se definiše kako bi se omogućile deklaracije funkcija
+ * i struktura koje su deo X/Open (POSIX) standarda.
+ *
+ * Bez ove definicije, zaglavlja mogu sakriti određene funkcije
+ * (npr. getpwuid, nftw, strdup, itd.) ili ih ne deklarisati uopšte,
+ * što dovodi do upozorenja ili grešaka pri prevođenju.
+ *
+ * Na ovaj način eksplicitno poručujemo:
+ * "Želim da koristim POSIX funkcije."
+ *
+ * Ovo nikada ne pamtimo napamet, već možemo naći u man stranama u
+ * 'Feature Test Macro Requirements' delu.
+ */
 #define _XOPEN_SOURCE 700
 
 #include <stdint.h>
