@@ -1,6 +1,14 @@
 /* Program ispisuje nazive svih fajlova unutar trenutnog direktorijuma.
  * Podsetnik: relativna putanja do trenutnog direktorijuma je "."
  *
+ * Napomena:
+ * Za razliku od komande `ls` (bez opcije -a), ovde se ispisuju i skriveni fajlovi,
+ * odnosno fajlovi čije ime počinje karakterom '.'.
+ *
+ * Skriveni fajlovi se u Unix/Linux sistemima koriste za čuvanje konfiguracionih
+ * i sistemskih podataka (npr. .bashrc, .profile, .gitignore) i podrazumevano
+ * nisu vidljivi kako ne bi zatrpavali korisnika uobičajenim izlazom komandi.
+ *
  * Primer poziva:
  * ./my_ls
  */

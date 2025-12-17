@@ -46,10 +46,17 @@ int main(int argc, char **argv)
     check_error(buffer != NULL, "malloc");
 
     int procitano;
-    errno = 0;
+    /* U ovom slučaju nije neophodno postavljati errno na 0 pre svakog poziva read().
+     * Funkcija read() jasno signalizira ishod poziva preko povratne vrednosti:
+     *  > 0 : uspešno pročitano odgovarajući broj bajtova
+     *  == 0 : kraj fajla (EOF)
+     *  == -1: došlo je do greške
+     *
+     * Zbog toga možemo pouzdano razlikovati grešku od normalnog završetka petlje
+     * na osnovu promenljive `procitano`, bez oslanjanja na errno unutar same petlje.
+     */
     while ((procitano = read(fdSrc, buffer, BUFFER_SIZE)) > 0) {
         check_error(write(fdDest, buffer, procitano) == procitano, "write");
-        errno = 0;
     }
     check_error(procitano == 0, "read");
 
