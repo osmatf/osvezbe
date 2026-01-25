@@ -3,7 +3,6 @@
 Čas pokriva:
 - rad sa deljenom memorijom
 - zaključavanje fajlova
-- vežbanje zadataka sa fifo fajlovima, deljenom memorijom, procesima i signalima
 
 TLPI poglavlja:
 - 49, 49.1, 49.2, 49.3, 49.4
