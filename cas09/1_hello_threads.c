@@ -41,6 +41,7 @@ main-u. Na kraju, main nit treba da saceka na sve ostale.
  * kada se dogodi greska, jer dodela vrednosti errno-u se u programu
  * koji koristi tredove odmotava u poziv funkcije. Detalji u TLPI.
  */
+/* TODO: _pthreadErr objasnjenje*/
 #define osPthreadCheck(pthreadErr, userMsg)                                                        \
     do {                                                                                           \
         int _pthreadErr = pthreadErr;                                                              \
