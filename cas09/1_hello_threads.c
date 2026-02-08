@@ -40,8 +40,14 @@ main-u. Na kraju, main nit treba da saceka na sve ostale.
  * Prilikom obrade gresaka, errno se modifikuje samo u slucaju
  * kada se dogodi greska, jer dodela vrednosti errno-u se u programu
  * koji koristi tredove odmotava u poziv funkcije. Detalji u TLPI.
+ *
+ * Iako errno sintaksički izgleda kao globalna promenljiva,
+ * u multithreaded programima ona je implementirana kao thread-local promenljiva.
+ * To znači da svaka nit ima sopstvenu kopiju errno, smeštenu u thread-local segmentu.
+ * U prevodu, errno je zapravo makro (koji lici na int) i koji vraća adresu errno-a za tekuću nit.
+ * Zbog toga ne dolazi do trke za resursima kada više niti istovremeno postavlja errno.
+ * U programima koji ne koriste niti, errno se ponasa identicno kao globalna promenljiva.
  */
-/* TODO: _pthreadErr objasnjenje*/
 #define osPthreadCheck(pthreadErr, userMsg)                                                        \
     do {                                                                                           \
         int _pthreadErr = pthreadErr;                                                              \
