@@ -40,6 +40,9 @@ int main(int argc, char **argv)
 {
     check_error(argc == 1, "./a.out");
 
+    /* postavljamo potpuno baferisanje standardnog izlaza */
+    check_error(setvbuf(stdout, NULL, _IOFBF, 0) == 0, "setvbuf");
+
     char *dir_path = getenv("PUTANJA");
     check_error(dir_path != NULL, "getenv");
 
