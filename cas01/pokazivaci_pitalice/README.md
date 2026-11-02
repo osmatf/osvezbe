@@ -461,7 +461,7 @@ memcpy(c + 2, a + 3, 2 * sizeof(int));
 Sta ce se ispisati? Zasto funkcija mora da dobije i velicinu `n`?
 
 ```c
-void swap(void *a, void *b, size_t n) {
+void swap(void *a, void *b, int n) {
     char *tmp = malloc(n);
     if (tmp == NULL)
         exit(EXIT_FAILURE);
