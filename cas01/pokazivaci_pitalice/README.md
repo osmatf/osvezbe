@@ -4,6 +4,28 @@ Kratke pitalice za demonstraciju rada sa pokazivacima.
 
 ---
 
+## Uvod: pokazivaci u C-u
+
+Svaka promenljiva se nalazi negde u memoriji i ima svoju **adresu**. Pokazivac je promenljiva cija je vrednost adresa neke druge promenljive.
+
+```c
+int x = 5;
+int *p = &x;          // p cuva adresu promenljive x
+
+printf("%d\n", *p);   // 5
+*p = 8;               // menja x preko pokazivaca
+printf("%d\n", x);    // 8
+```
+
+- `int *p` deklarise pokazivac na `int`. Tip kaze sta se nalazi na toj adresi, tj. kako da se protumaci vrednost na koju `p` pokazuje.
+- `&x` daje adresu promenljive `x`.
+- `*p` je vrednost na adresi koju cuva `p` (dereferenciranje). Preko `*p` moze i da se cita i da se upisuje.
+- Znak `*` u deklaraciji znaci "pokazivac", a u izrazu znaci "vrednost na adresi".
+- `NULL` je posebna vrednost koja znaci da pokazivac ne pokazuje ni na sta. Dereferenciranje `NULL` pokazivaca obicno obori program (*Segmentation fault*).
+- Adresa moze da se ispise sa `printf("%p\n", (void *)p);`.
+
+---
+
 ## Pitalica 1: Zagrevanje
 
 Sta ce se ispisati?
