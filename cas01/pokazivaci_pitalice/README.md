@@ -22,7 +22,7 @@ printf("%d\n", x);    // 8
 - `*p` je vrednost na adresi koju cuva `p` (dereferenciranje). Preko `*p` moze i da se cita i da se upisuje.
 - Znak `*` u deklaraciji znaci "pokazivac", a u izrazu znaci "vrednost na adresi".
 - `NULL` je posebna vrednost koja znaci da pokazivac ne pokazuje ni na sta. Dereferenciranje `NULL` pokazivaca obicno obori program (*Segmentation fault*).
-- Adresa moze da se ispise sa `printf("%p\n", (void *)p);`.
+- Adresa moze da se ispise sa `printf("%p\n", p);`.
 
 ---
 
