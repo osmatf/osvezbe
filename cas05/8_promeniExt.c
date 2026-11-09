@@ -3,7 +3,8 @@ Poziv programa;
 ./a.out path ext
 
 Program dodaje ekstenziju 'ext' na ime fajla koji se nalazi
-na putanji 'path' (slicno kao rename funkcija).
+na putanji 'path'. Iako bi rename sistemski poziv
+bio ispravniji izbor ovde, ovaj primer koristimo za vezbanje.
 */
 
 #define _XOPEN_SOURCE 700
