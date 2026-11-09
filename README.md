@@ -24,9 +24,16 @@ Tokom kursa obrađuju se sledeće teme:
 
 Ispit se sastoji iz **dva dela**: praktičnog i teorijskog.
 
+### 💻 Opcioni kolokvijumi
+- 2 kolokvijuma u kolokvijumskim nedeljama od po 30p koji zajedno menjaju praktični deo ispita
+- Programski jezik: **C**
+- **Gradivo za prvi kolokvijum**: folderi cas01 - cas05
+- **Gradivo za drugi kolovkijum**: od foldera cas06 do kraja kursa
+- **Prag:** na oba kolokvijuma po 12/30p.
+
 ### 💻 Praktični deo
 - Radi se na računaru
-- Trajanje: **3 sata**
+- Trajanje: **2 sata i 15 minuta**
 - Programski jezik: **C**
 - Maksimalan broj poena: **60**
 - **Prag:** 24/60
