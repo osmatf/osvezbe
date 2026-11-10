@@ -41,7 +41,7 @@ int main(int argc, char **argv)
            brokenTime->tm_mon + 1, brokenTime->tm_year + 1900, brokenTime->tm_hour,
            brokenTime->tm_min, brokenTime->tm_sec);
 
-    /* Pomeramo vreme za m godina.
+    /* Pomeramo vreme za m minuta.
      * NAPOMENA: sta ako je m >= 60? Strukutura ce u polju tm_min imati broj
      * koji je >=60, sto nije validno vreme. Medjutim, kada se pozove funkcija
      * mktime, struktura se normalizuje i dobija se ispravno vreme.
