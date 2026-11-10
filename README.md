@@ -48,3 +48,5 @@ Ispit se sastoji iz **dva dela**: praktičnog i teorijskog.
 - **Oba dela moraju biti položena pojedinačno** (ispunjen prag) i zbir mora biti bar 51p da bi se ispit položio
 - Jednom položen praktični deo ispita važi do prvog pada na teorijskom delu.
 
+### Literatura
+- Materijali sa vezbi + TLPI (The Linux Programming Interface) knjiga.
