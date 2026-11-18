@@ -33,7 +33,7 @@ char *ext = NULL;
 int filterByExt(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
 {
     /* ako se radi o regularnom fajlu */
-    if (typeflag == FTW_F) {
+    if (typeflag == FTW_F) { // moze i S_ISREG(sb->st_mode)
 
         /* ftwbuf->base predstavlja indeks u nizu `fpath` od kog počinje ime fajla
          * (bez putanje do direktorijuma). Na taj način pretragu karaktera '.'
