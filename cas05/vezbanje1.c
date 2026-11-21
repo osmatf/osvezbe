@@ -112,15 +112,15 @@ void print_info(const char *filename)
     fileInfoStr[1] = (fInfo.st_mode & S_IRUSR) ? 'r' : '-';
     fileInfoStr[2] = (fInfo.st_mode & S_IWUSR) ? 'w' : '-';
     fileInfoStr[3] = (fInfo.st_mode & S_IXUSR) ? 'x' : '-';
-    
+
     fileInfoStr[4] = (fInfo.st_mode & S_IRGRP) ? 'r' : '-';
     fileInfoStr[5] = (fInfo.st_mode & S_IWGRP) ? 'w' : '-';
     fileInfoStr[6] = (fInfo.st_mode & S_IXGRP) ? 'x' : '-';
-    
+
     fileInfoStr[7] = (fInfo.st_mode & S_IROTH) ? 'r' : '-';
     fileInfoStr[8] = (fInfo.st_mode & S_IWOTH) ? 'w' : '-';
     fileInfoStr[9] = (fInfo.st_mode & S_IXOTH) ? 'x' : '-';
-    
+
     /* trenutni broj upisanih karaktera u dinamicki alociranom stringu */
     unsigned offset = 10;
 
