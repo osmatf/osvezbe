@@ -2,10 +2,12 @@
 Čas pokriva:
 
 - rad sa informacijama o korisnicima i grupama
+- apsolutne i relativne putanje, tekući direktorijum procesa, razrešavanje `.` i `..`
 - rad sa informacijama o fajlovima na sistemu
 
 TLPI poglavlja:
 
+- 2.4 (putanje i tekući direktorijum), 18.13
 - 8.1, 8.2, 8.3, 8.4
 - 15.1, 15.4, 15.4.1 - 15.4.3
 

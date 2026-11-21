@@ -88,11 +88,6 @@ void print_info(const char *filename)
     struct stat fInfo;
     check_error(lstat(filename, &fInfo) != -1, "stat failed");
 
-    /* Inicijalno pretpostavljamo da fajl ima sva prava pristupa.
-     * Kasnije ćemo ukloniti ona prava koja zapravo ne postoje.
-     */
-    strcpy(fileInfoStr, "-rwxrwxrwx ");
-
     /* otkrivamo koji je tip fajla u pitanju
      *
      * man 2 stat i man 7 inode, TLPI za detalje
@@ -114,29 +109,20 @@ void print_info(const char *filename)
     }
 
     /* otkrivamo koje privilegije poseduje fajl */
-    if (!(fInfo.st_mode & S_IRUSR))
-        fileInfoStr[1] = '-';
-    if (!(fInfo.st_mode & S_IWUSR))
-        fileInfoStr[2] = '-';
-    if (!(fInfo.st_mode & S_IXUSR))
-        fileInfoStr[3] = '-';
-
-    if (!(fInfo.st_mode & S_IRGRP))
-        fileInfoStr[4] = '-';
-    if (!(fInfo.st_mode & S_IWGRP))
-        fileInfoStr[5] = '-';
-    if (!(fInfo.st_mode & S_IXGRP))
-        fileInfoStr[6] = '-';
-
-    if (!(fInfo.st_mode & S_IROTH))
-        fileInfoStr[7] = '-';
-    if (!(fInfo.st_mode & S_IWOTH))
-        fileInfoStr[8] = '-';
-    if (!(fInfo.st_mode & S_IXOTH))
-        fileInfoStr[9] = '-';
-
+    fileInfoStr[1] = (fInfo.st_mode & S_IRUSR) ? 'r' : '-';
+    fileInfoStr[2] = (fInfo.st_mode & S_IWUSR) ? 'w' : '-';
+    fileInfoStr[3] = (fInfo.st_mode & S_IXUSR) ? 'x' : '-';
+    
+    fileInfoStr[4] = (fInfo.st_mode & S_IRGRP) ? 'r' : '-';
+    fileInfoStr[5] = (fInfo.st_mode & S_IWGRP) ? 'w' : '-';
+    fileInfoStr[6] = (fInfo.st_mode & S_IXGRP) ? 'x' : '-';
+    
+    fileInfoStr[7] = (fInfo.st_mode & S_IROTH) ? 'r' : '-';
+    fileInfoStr[8] = (fInfo.st_mode & S_IWOTH) ? 'w' : '-';
+    fileInfoStr[9] = (fInfo.st_mode & S_IXOTH) ? 'x' : '-';
+    
     /* trenutni broj upisanih karaktera u dinamicki alociranom stringu */
-    unsigned offset = 11;
+    unsigned offset = 10;
 
     /* Korišćenjem sprintf upisujemo formatirane informacije u string.
      * Nakon svakog upisa pomeramo offset za broj upisanih karaktera
@@ -145,7 +131,7 @@ void print_info(const char *filename)
      * sprintf vraća broj upisanih bajtova, što koristimo za ažuriranje
      * offset-a.
      */
-    offset += sprintf(fileInfoStr + offset, "%ju ", (uintmax_t)fInfo.st_nlink);
+    offset += sprintf(fileInfoStr + offset, " %ju ", (uintmax_t)fInfo.st_nlink);
 
     /* Ime korisnika dobijamo na osnovu njegovog UID-a
      * iz passwd baze (/etc/passwd).
