@@ -1,0 +1,959 @@
+<!doctype html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brzi priručnik</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #f5f6f8;
+    --text: #1d2125;
+    --muted: #5c6570;
+    --border: #dfe3e8;
+    --accent: #0a5bb0;
+    --accent-bg: #e7f0fb;
+    --code-bg: #eff1f4;
+    --row-hover: #f8f9fb;
+    --warn-bg: #fff6dd;
+    --warn-border: #d99a00;
+    --warn-text: #523a00;
+    --header-h: 58px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14171b;
+      --surface: #1c2026;
+      --text: #e2e5e9;
+      --muted: #9aa3ad;
+      --border: #2d333a;
+      --accent: #80b6f0;
+      --accent-bg: #1d2b3b;
+      --code-bg: #232830;
+      --row-hover: #1a1e23;
+      --warn-bg: #2b2414;
+      --warn-border: #d6a21e;
+      --warn-text: #f3dca0;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14171b;
+    --surface: #1c2026;
+    --text: #e2e5e9;
+    --muted: #9aa3ad;
+    --border: #2d333a;
+    --accent: #80b6f0;
+    --accent-bg: #1d2b3b;
+    --code-bg: #232830;
+    --row-hover: #1a1e23;
+    --warn-bg: #2b2414;
+    --warn-border: #d6a21e;
+    --warn-text: #f3dca0;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  /* Istaknuta napomena */
+  .napomena {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    max-width: 80ch;
+    margin: 16px 0 20px;
+    padding: 12px 16px;
+    background: var(--warn-bg);
+    color: var(--warn-text);
+    border: 1px solid var(--warn-border);
+    border-left-width: 5px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  .napomena svg { flex: none; margin-top: 2px; color: var(--warn-border); }
+  .napomena p { margin: 0; }
+  [hidden] { display: none !important; }
+  html { scroll-padding-top: calc(var(--header-h) + 12px); }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "DejaVu Sans", sans-serif;
+  }
+  a { color: var(--accent); }
+
+  /* Zaglavlje sa pretragom */
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .top-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .brand { font-weight: 650; white-space: nowrap; margin-right: auto; }
+  .search { position: relative; flex: 1 1 260px; max-width: 440px; }
+  .search svg {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); pointer-events: none;
+  }
+  .search input {
+    width: 100%;
+    padding: 7px 34px 7px 34px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+  }
+  .search input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .search kbd {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    font: 12px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", monospace;
+    color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 3px 6px;
+  }
+  .search input:focus + kbd { display: none; }
+  #info { color: var(--muted); font-size: .875rem; min-width: 8.5em; }
+  #info:empty { display: none; }
+  @media (max-width: 599px) {
+    :root { --header-h: 104px; }
+    .search { order: 3; flex-basis: 100%; max-width: none; }
+    #info { min-width: 0; }
+  }
+  @media (hover: none) {
+    .search kbd { display: none; }
+  }
+  #tema {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    border-radius: 8px;
+    width: 34px; height: 34px;
+    display: grid; place-items: center;
+    cursor: pointer;
+  }
+  #tema:hover { color: var(--accent); }
+
+  /* Raspored */
+  .layout {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 16px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px 40px;
+  }
+  .nav summary {
+    cursor: pointer;
+    padding: 12px 0 4px;
+    font-weight: 600;
+  }
+  #TOC ul { list-style: none; margin: 0; padding: 0; }
+  #TOC > ul { padding: 8px 0 16px; }
+  #TOC a {
+    display: block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: .9rem;
+  }
+  #TOC ul ul a { padding-left: 20px; color: var(--muted); font-size: .85rem; }
+  #TOC a:hover { background: var(--surface); color: var(--accent); }
+  #TOC a.active { background: var(--accent-bg); color: var(--accent); }
+  @media (min-width: 900px) {
+    .layout { grid-template-columns: 250px minmax(0, 1fr); }
+    .nav {
+      position: sticky;
+      top: var(--header-h);
+      align-self: start;
+      max-height: calc(100vh - var(--header-h));
+      overflow-y: auto;
+      padding-top: 16px;
+    }
+    .nav summary { display: none; }
+  }
+
+  /* Sadržaj */
+  main { min-width: 0; padding: 8px 0 80px; }
+  main > h1.title { font-size: 1.7rem; line-height: 1.25; margin: 20px 0 12px; }
+  main h1 {
+    font-size: 1.45rem;
+    margin: 44px 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  main h2 { font-size: 1.08rem; margin: 28px 0 6px; }
+  main hr { display: none; }
+  main p, main li { max-width: 80ch; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", monospace;
+    font-size: .86em;
+    background: var(--code-bg);
+    padding: .1em .35em;
+    border-radius: 4px;
+  }
+  pre {
+    background: var(--code-bg);
+    padding: 12px 14px;
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  pre code { background: none; padding: 0; }
+  pre a { display: none; }
+
+  .table-wrap { overflow-x: auto; margin: 8px 0 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  thead th {
+    background: var(--surface);
+    color: var(--muted);
+    font-size: .8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  tbody tr:hover { background: var(--row-hover); }
+  td.col-ime code {
+    background: none;
+    padding: 0;
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  td.col-opis { min-width: 30ch; }
+  thead th:first-child { width: 19rem; }
+
+  /* Spiskovi funkcija */
+  ul.spisak {
+    list-style: none;
+    margin: 8px 0 14px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    column-gap: 16px;
+  }
+  main ul.spisak li { max-width: none; padding: 5px 2px; border-bottom: 1px solid var(--border); }
+  ul.spisak code {
+    background: none;
+    padding: 0;
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  body.pretraga-aktivna section.level1 > p { display: none; }
+
+  #prazno { color: var(--muted); padding: 24px 0; }
+  body.pretraga-aktivna main > :not(section):not(#prazno) { display: none; }
+
+  @media print {
+    .top, .nav { display: none; }
+    .layout { display: block; max-width: none; padding: 0; }
+    tr { break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">Brzi priručnik</div>
+    <label class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="pretraga" type="search" placeholder="Pretraga: readdir, chmod, ENOENT..." aria-label="Pretraga funkcija" autocomplete="off">
+      <kbd>/</kbd>
+    </label>
+    <span id="info" aria-live="polite"></span>
+    <button id="tema" type="button" title="Promeni temu" aria-label="Promeni temu">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+  <details class="nav" id="nav">
+    <summary>Sadržaj</summary>
+    <nav id="TOC">
+<ul>
+<li><a href="#kodovi-grešaka" id="toc-kodovi-grešaka">Česti kodovi
+grešaka</a></li>
+<li><a href="#i-sistemski-pozivi" id="toc-i-sistemski-pozivi">I.
+Sistemski pozivi</a></li>
+<li><a href="#ii-posix-bibliotečke-funkcije"
+id="toc-ii-posix-bibliotečke-funkcije">II. POSIX bibliotečke
+funkcije</a></li>
+<li><a href="#iii-c-standardna-biblioteka"
+id="toc-iii-c-standardna-biblioteka">III. C standardna biblioteka</a></li>
+<li><a href="#korisni-makroi" id="toc-korisni-makroi">Korisni
+makroi</a></li>
+<li><a href="#komande-terminala" id="toc-komande-terminala">Komande
+terminala za test primere</a>
+<ul>
+<li><a href="#komande-fajlovi" id="toc-komande-fajlovi">Fajlovi i
+direktorijumi</a></li>
+<li><a href="#komande-linkovi" id="toc-komande-linkovi">Linkovi</a></li>
+<li><a href="#komande-prava" id="toc-komande-prava">Prava pristupa i
+korisnici</a></li>
+<li><a href="#komande-vremena" id="toc-komande-vremena">Vremena</a></li>
+<li><a href="#komande-pregled" id="toc-komande-pregled">Pregled fajlova i
+sadržaja</a></li>
+<li><a href="#komande-pokretanje" id="toc-komande-pokretanje">Pokretanje,
+ulaz i izlaz</a></li>
+<li><a href="#komande-okruzenje" id="toc-komande-okruzenje">Promenljive
+okruženja</a></li>
+<li><a href="#komande-procesi" id="toc-komande-procesi">Procesi i
+signali</a></li>
+</ul></li>
+</ul>
+    </nav>
+  </details>
+
+  <main>
+    <h1 class="title">Brzi priručnik: sistemski pozivi i bibliotečke
+funkcije</h1>
+<p>Spisak funkcija koje se koriste na vežbama. Broj u zagradi je sekcija man strana: <code>open(2)</code> se
+otvara sa <code>man 2 open</code>, a <code>readdir(3)</code> sa
+<code>man 3 readdir</code>.</p>
+<div class="napomena" role="note">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg>
+<p>Opis argumenata i svih mogućih grešaka uvek proveriti u man stranama.</p>
+</div>
+<ul>
+<li><strong>Sistemski poziv</strong> (man 2) je zahtev koji program
+direktno upućuje jezgru operativnog sistema.</li>
+<li><strong>POSIX bibliotečka funkcija</strong> (man 3) postoji na UNIX
+sistemima, ali nije deo C standarda (npr. <code>opendir</code>).</li>
+<li><strong>Funkcija C standardne biblioteke</strong> (man 3) postoji uz
+svaki C prevodilac, na bilo kom sistemu (npr. <code>printf</code>).</li>
+</ul>
+<section id="kodovi-grešaka" class="level1">
+<h1>Česti kodovi grešaka (<code>&lt;errno.h&gt;</code>)</h1>
+<ul class="spisak">
+<li><code>ENOENT</code></li>
+<li><code>EACCES</code></li>
+<li><code>EEXIST</code></li>
+<li><code>ENOTDIR</code></li>
+<li><code>EISDIR</code></li>
+<li><code>ENOTEMPTY</code></li>
+<li><code>EINTR</code></li>
+<li><code>EAGAIN</code></li>
+</ul>
+</section>
+<section id="i-sistemski-pozivi" class="level1">
+<h1>I. Sistemski pozivi</h1>
+<ul class="spisak">
+<li><code>open(2)</code></li>
+<li><code>close(2)</code></li>
+<li><code>read(2)</code></li>
+<li><code>write(2)</code></li>
+<li><code>lseek(2)</code></li>
+<li><code>ftruncate(2)</code></li>
+<li><code>dup(2)</code></li>
+<li><code>dup2(2)</code></li>
+<li><code>poll(2)</code></li>
+<li><code>stat(2)</code></li>
+<li><code>lstat(2)</code></li>
+<li><code>fstat(2)</code></li>
+<li><code>chmod(2)</code></li>
+<li><code>umask(2)</code></li>
+<li><code>utime(2)</code></li>
+<li><code>mkdir(2)</code></li>
+<li><code>rmdir(2)</code></li>
+<li><code>unlink(2)</code></li>
+<li><code>rename(2)</code></li>
+<li><code>time(2)</code></li>
+<li><code>gettimeofday(2)</code></li>
+<li><code>fork(2)</code></li>
+<li><code>getpid(2)</code></li>
+<li><code>getppid(2)</code></li>
+<li><code>wait(2)</code></li>
+<li><code>waitpid(2)</code></li>
+<li><code>pipe(2)</code></li>
+<li><code>signal(2)</code></li>
+<li><code>sigaction(2)</code></li>
+<li><code>kill(2)</code></li>
+<li><code>pause(2)</code></li>
+<li><code>mmap(2)</code></li>
+<li><code>munmap(2)</code></li>
+<li><code>fcntl(2)</code></li>
+</ul>
+</section>
+<section id="ii-posix-bibliotečke-funkcije" class="level1">
+<h1>II. POSIX bibliotečke funkcije</h1>
+<ul class="spisak">
+<li><code>getpwnam(3)</code></li>
+<li><code>getpwuid(3)</code></li>
+<li><code>getpwent(3)</code></li>
+<li><code>setpwent(3)</code></li>
+<li><code>endpwent(3)</code></li>
+<li><code>getgrgid(3)</code></li>
+<li><code>getgrnam(3)</code></li>
+<li><code>opendir(3)</code></li>
+<li><code>readdir(3)</code></li>
+<li><code>closedir(3)</code></li>
+<li><code>nftw(3)</code></li>
+<li><code>realpath(3)</code></li>
+<li><code>execl(3)</code></li>
+<li><code>execlp(3)</code></li>
+<li><code>execvp(3)</code></li>
+<li><code>sleep(3)</code></li>
+<li><code>setenv(3)</code></li>
+<li><code>unsetenv(3)</code></li>
+<li><code>environ</code></li>
+<li><code>fileno(3)</code></li>
+<li><code>fdopen(3)</code></li>
+<li><code>getline(3)</code></li>
+<li><code>shm_open(3)</code></li>
+<li><code>shm_unlink(3)</code></li>
+<li><code>sem_init(3)</code></li>
+<li><code>sem_wait(3)</code></li>
+<li><code>sem_post(3)</code></li>
+<li><code>sem_destroy(3)</code></li>
+<li><code>pthread_create(3)</code></li>
+<li><code>pthread_join(3)</code></li>
+<li><code>pthread_detach(3)</code></li>
+<li><code>pthread_exit(3)</code></li>
+<li><code>pthread_self(3)</code></li>
+<li><code>pthread_mutex_init(3)</code></li>
+<li><code>pthread_mutex_lock(3)</code></li>
+<li><code>pthread_mutex_unlock(3)</code></li>
+<li><code>pthread_mutex_destroy(3)</code></li>
+<li><code>strcasecmp(3)</code></li>
+</ul>
+</section>
+<section id="iii-c-standardna-biblioteka" class="level1">
+<h1>III. C standardna biblioteka</h1>
+<ul class="spisak">
+<li><code>printf(3)</code></li>
+<li><code>fprintf(3)</code></li>
+<li><code>sprintf(3)</code></li>
+<li><code>snprintf(3)</code></li>
+<li><code>scanf(3)</code></li>
+<li><code>fscanf(3)</code></li>
+<li><code>sscanf(3)</code></li>
+<li><code>fopen(3)</code></li>
+<li><code>fclose(3)</code></li>
+<li><code>fgets(3)</code></li>
+<li><code>fgetc(3)</code></li>
+<li><code>getchar(3)</code></li>
+<li><code>feof(3)</code></li>
+<li><code>ferror(3)</code></li>
+<li><code>fseek(3)</code></li>
+<li><code>ftell(3)</code></li>
+<li><code>fflush(3)</code></li>
+<li><code>setvbuf(3)</code></li>
+<li><code>perror(3)</code></li>
+<li><code>remove(3)</code></li>
+<li><code>malloc(3)</code></li>
+<li><code>free(3)</code></li>
+<li><code>exit(3)</code></li>
+<li><code>atoi(3)</code></li>
+<li><code>strtol(3)</code></li>
+<li><code>getenv(3)</code></li>
+<li><code>rand(3)</code></li>
+<li><code>srand(3)</code></li>
+<li><code>strlen(3)</code></li>
+<li><code>strcpy(3)</code></li>
+<li><code>strncpy(3)</code></li>
+<li><code>strcat(3)</code></li>
+<li><code>strcmp(3)</code></li>
+<li><code>strncmp(3)</code></li>
+<li><code>strchr(3)</code></li>
+<li><code>strrchr(3)</code></li>
+<li><code>strstr(3)</code></li>
+<li><code>strtok(3)</code></li>
+<li><code>memset(3)</code></li>
+<li><code>strerror(3)</code></li>
+<li><code>tolower(3)</code></li>
+<li><code>toupper(3)</code></li>
+<li><code>localtime(3)</code></li>
+<li><code>mktime(3)</code></li>
+<li><code>ctime(3)</code></li>
+<li><code>strftime(3)</code></li>
+</ul>
+</section>
+<section id="korisni-makroi" class="level1">
+<h1>Korisni makroi</h1>
+<ul class="spisak">
+<li><code>S_ISREG(m)</code></li>
+<li><code>S_ISDIR(m)</code></li>
+<li><code>S_ISLNK(m)</code></li>
+<li><code>S_ISFIFO(m)</code></li>
+<li><code>S_ISCHR(m)</code></li>
+<li><code>S_ISBLK(m)</code></li>
+<li><code>S_ISSOCK(m)</code></li>
+<li><code>S_IRUSR</code></li>
+<li><code>S_IWUSR</code></li>
+<li><code>S_IXUSR</code></li>
+<li><code>S_IRGRP</code></li>
+<li><code>S_IWGRP</code></li>
+<li><code>S_IXGRP</code></li>
+<li><code>S_IROTH</code></li>
+<li><code>S_IWOTH</code></li>
+<li><code>S_IXOTH</code></li>
+<li><code>WIFEXITED(s)</code></li>
+<li><code>WEXITSTATUS(s)</code></li>
+<li><code>__FILE__</code></li>
+<li><code>__LINE__</code></li>
+<li><code>__func__</code></li>
+</ul>
+</section>
+<section id="komande-terminala" class="level1">
+<h1>Komande terminala za pravljenje test primera</h1>
+<p>Komande za pripremu fajlova, prava pristupa, vremena i procesa nad
+kojima se testira program. Detalji o svakoj komandi su u
+<code>man 1 ime_komande</code>.</p>
+<section id="komande-fajlovi" class="level2">
+<h2>Fajlovi i direktorijumi</h2>
+<table>
+<thead>
+<tr>
+<th>Komanda</th>
+<th>Čemu služi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>touch 1.txt</code></td>
+<td>Kreira prazan fajl ako ne postoji, a postojećem fajlu postavlja
+vreme pristupa i izmene na trenutno.</td>
+</tr>
+<tr>
+<td><code>mkdir dir</code><br /><code>mkdir -p dir/a/b</code></td>
+<td>Kreira direktorijum; uz <code>-p</code> pravi i sve direktorijume
+na putanji koji ne postoje.</td>
+</tr>
+<tr>
+<td><code>truncate -s 5000 1.txt</code></td>
+<td>Postojećem fajlu menja veličinu, skraćujući ga ili
+dopunjujući nulama.</td>
+</tr>
+<tr>
+<td><code>touch .skriven</code><br /><code>mkdir .skriveni_dir</code></td>
+<td>Pravi skriven fajl, odnosno direktorijum: ime počinje tačkom, pa ga
+<code>ls</code> bez opcije <code>-a</code> ne prikazuje.</td>
+</tr>
+<tr>
+<td><code>cp izvor.txt kopija.txt</code><br /><code>mv staro.txt novo.txt</code></td>
+<td>Kopira fajl, odnosno premešta ga ili mu menja ime.</td>
+</tr>
+<tr>
+<td><code>rm 1.txt</code><br /><code>rm -r dir</code><br /><code>rmdir dir</code></td>
+<td>Briše fajl, direktorijum sa celim sadržajem, odnosno prazan
+direktorijum.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="komande-linkovi" class="level2">
+<h2>Linkovi</h2>
+<table>
+<thead>
+<tr>
+<th>Komanda</th>
+<th>Čemu služi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ln 1.txt hard.txt</code></td>
+<td>Pravi hard link: novo ime za isti fajl (isti inode).</td>
+</tr>
+<tr>
+<td><code>ln -s 1.txt link</code></td>
+<td>Pravi simbolički link koji pokazuje na putanju <code>1.txt</code>.</td>
+</tr>
+<tr>
+<td><code>ln -s nepostoji.txt link</code></td>
+<td>Pravi simbolički link na nepostojeći fajl: <code>lstat</code> nad
+njim uspeva, a <code>stat</code> vraća <code>ENOENT</code>.</td>
+</tr>
+<tr>
+<td><code>ln -s dir dirlink</code></td>
+<td>Pravi simbolički link na direktorijum, npr. za proveru da li obilazak
+direktorijuma prati linkove.</td>
+</tr>
+<tr>
+<td><code>readlink link</code></td>
+<td>Ispisuje putanju na koju simbolički link pokazuje.</td>
+</tr>
+</tbody>
+</table>
+<p>Relativna putanja u simboličkom linku tumači se u odnosu na
+direktorijum u kom se link nalazi, a ne u odnosu na tekući direktorijum:
+<code>ln -s 1.txt dir/link</code> pravi link koji pokazuje na
+<code>dir/1.txt</code>.</p>
+</section>
+<section id="komande-prava" class="level2">
+<h2>Prava pristupa i korisnici</h2>
+<table>
+<thead>
+<tr>
+<th>Komanda</th>
+<th>Čemu služi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>chmod 644 1.txt</code></td>
+<td>Postavlja prava zadata oktalno (ovde <code>rw-r--r--</code>).</td>
+</tr>
+<tr>
+<td><code>chmod u-r 1.txt</code><br /><code>chmod go+w 1.txt</code><br /><code>chmod a+x 1.txt</code></td>
+<td>Oduzima ili dodaje pojedinačna prava: <code>u</code> vlasniku,
+<code>g</code> grupi, <code>o</code> ostalima, <code>a</code>
+svima.</td>
+</tr>
+<tr>
+<td><code>sudo chown root 1.txt</code><br /><code>sudo chgrp root 1.txt</code></td>
+<td>Menja vlasnika, odnosno grupu fajla; potrebna su administratorska
+prava.</td>
+</tr>
+<tr>
+<td><code>id</code><br /><code>whoami</code></td>
+<td>Ispisuje UID, GID i grupe tekućeg korisnika, odnosno samo njegovo
+ime.</td>
+</tr>
+<tr>
+<td><code>getent passwd ime</code><br /><code>getent group ime</code></td>
+<td>Ispisuje podatke o korisniku, odnosno grupi, iz istog izvora iz kog
+čitaju <code>getpwnam</code> i <code>getgrnam</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Prava pristupa testirati kao običan korisnik: <code>root</code> ima
+pristup svemu i nikad ne dobija <code>EACCES</code>.</p>
+</section>
+<section id="komande-vremena" class="level2">
+<h2>Vremena</h2>
+<table>
+<thead>
+<tr>
+<th>Komanda</th>
+<th>Čemu služi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>touch -m -t 198212121532.15 1.txt</code></td>
+<td>Postavlja vreme poslednje izmene na 12. 12. 1982. u 15:32:15 (format
+<code>[[CC]YY]MMDDhhmm[.ss]</code>).</td>
+</tr>
+<tr>
+<td><code>touch -a -t 202401011200 1.txt</code></td>
+<td>Postavlja vreme poslednjeg pristupa (ovde 1. 1. 2024. u
+12:00).</td>
+</tr>
+<tr>
+<td><code>touch -d '2 days ago' 1.txt</code><br /><code>touch -d '2024-11-20 17:45' 1.txt</code></td>
+<td>Postavlja vreme pristupa i izmene zadato rečima ili datumom.</td>
+</tr>
+<tr>
+<td><code>stat 1.txt</code></td>
+<td>Ispisuje sve metapodatke fajla: veličinu, prava, vlasnika, inode i
+sva tri vremena.</td>
+</tr>
+</tbody>
+</table>
+<p>Pravljenje i brisanje fajlova menja vreme izmene direktorijuma u kom
+se nalaze, zato vremena direktorijuma treba postaviti poslednja.</p>
+</section>
+<section id="komande-pregled" class="level2">
+<h2>Pregled fajlova i sadržaja</h2>
+<table>
+<thead>
+<tr>
+<th>Komanda</th>
+<th>Čemu služi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ls -la</code></td>
+<td>Ispisuje sve fajlove, uključujući i skrivene, sa tipom, pravima,
+brojem linkova, vlasnikom, veličinom i vremenom izmene.</td>
+</tr>
+<tr>
+<td><code>find dir</code></td>
+<td>Ispisuje putanje svih fajlova u stablu, slično obilasku sa
+<code>nftw</code>.</td>
+</tr>
+<tr>
+<td><code>find dir -user ime</code><br /><code>find dir -name '*.c'</code><br /><code>find dir -type d</code></td>
+<td>Pronalazi fajlove po vlasniku, imenu ili tipu; korisno za proveru
+izlaza programa.</td>
+</tr>
+<tr>
+<td><code>cat 1.txt</code></td>
+<td>Ispisuje sadržaj fajla.</td>
+</tr>
+<tr>
+<td><code>pwd</code></td>
+<td>Ispisuje tekući direktorijum.</td>
+</tr>
+<tr>
+<td><code>realpath 1.txt</code><br /><code>realpath -s link</code></td>
+<td>Ispisuje apsolutnu putanju; uz <code>-s</code> ne razrešava
+simboličke linkove.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="komande-pokretanje" class="level2">
+<h2>Pokretanje, ulaz i izlaz</h2>
+<table>
+<thead>
+<tr>
+<th>Komanda</th>
+<th>Čemu služi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>./a.out &lt; ulaz.txt</code></td>
+<td>Program čita standardni ulaz iz fajla.</td>
+</tr>
+<tr>
+<td><code>echo $?</code></td>
+<td>Ispisuje izlazni kod poslednje pokrenute komande (npr. 0 ili 1 posle
+<code>exit</code>).</td>
+</tr>
+<tr>
+<td><code>Ctrl+D</code></td>
+<td>Označava kraj ulaza kada program čita sa tastature.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="komande-okruzenje" class="level2">
+<h2>Promenljive okruženja</h2>
+<table>
+<thead>
+<tr>
+<th>Komanda</th>
+<th>Čemu služi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>export IME=vrednost</code></td>
+<td>Postavlja promenljivu okruženja za sve programe pokrenute iz
+tekućeg terminala.</td>
+</tr>
+<tr>
+<td><code>IME=vrednost ./a.out</code></td>
+<td>Postavlja promenljivu samo za to jedno pokretanje programa.</td>
+</tr>
+<tr>
+<td><code>unset IME</code></td>
+<td>Briše promenljivu okruženja.</td>
+</tr>
+<tr>
+<td><code>env</code><br /><code>printenv IME</code></td>
+<td>Ispisuje sve promenljive okruženja, odnosno vrednost jedne.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="komande-procesi" class="level2">
+<h2>Procesi i signali</h2>
+<table>
+<thead>
+<tr>
+<th>Komanda</th>
+<th>Čemu služi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ps aux</code><br /></td>
+<td>Ispisuje sve procese na sistemu.</td>
+</tr>
+<tr>
+<td><code>pgrep a.out</code></td>
+<td>Ispisuje PID-ove procesa sa zadatim imenom.</td>
+</tr>
+<tr>
+<td><code>kill -SIGUSR1 PID</code></td>
+<td>Šalje zadati signal procesu; bez opcije šalje
+<code>SIGTERM</code>.</td>
+</tr>
+<tr>
+<td><code>kill -l</code></td>
+<td>Ispisuje spisak svih signala sa njihovim brojevima.</td>
+</tr>
+<tr>
+<td><code>Ctrl+C</code></td>
+<td>Šalje signal <code>SIGINT</code> programu koji radi u
+terminalu.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+    <p id="prazno" hidden>Nema rezultata za zadatu pretragu.</p>
+  </main>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var main = document.querySelector('main');
+
+  /* Tema: pamti se samo u ovom pregledaču */
+  try {
+    var sacuvana = localStorage.getItem('prirucnik-tema');
+    if (sacuvana === 'light' || sacuvana === 'dark') root.setAttribute('data-theme', sacuvana);
+  } catch (e) {}
+  document.getElementById('tema').addEventListener('click', function () {
+    var trenutna = root.getAttribute('data-theme') ||
+      (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    var nova = trenutna === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', nova);
+    try { localStorage.setItem('prirucnik-tema', nova); } catch (e) {}
+  });
+
+  /* Bočni sadržaj je na širokim ekranima uvek otvoren */
+  var nav = document.getElementById('nav');
+  if (matchMedia('(min-width: 900px)').matches) nav.open = true;
+
+  /* Tabele: omotač za horizontalno skrolovanje i klase za kolone */
+  main.querySelectorAll('table').forEach(function (table) {
+    var omotac = document.createElement('div');
+    omotac.className = 'table-wrap';
+    table.parentNode.insertBefore(omotac, table);
+    omotac.appendChild(table);
+    table.querySelectorAll('tbody tr').forEach(function (tr) {
+      if (tr.children[0]) tr.children[0].classList.add('col-ime');
+      if (tr.children[1]) tr.children[1].classList.add('col-opis');
+    });
+  });
+
+  /* Pretraga: ne pravi razliku između velikih i malih slova ni č/c, š/s, ž/z, đ/dj */
+  function normalizuj(s) {
+    return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'dj');
+  }
+  /* Stavke koje pretraga filtrira (redovi tabela i stavke spiskova) i blokovi koji ih sadrže */
+  var STAVKE = 'tbody tr, ul.spisak > li';
+  var BLOKOVI = '.table-wrap, ul.spisak';
+  var sekcije = Array.prototype.slice.call(main.querySelectorAll('section'));
+  var listovi = sekcije.filter(function (s) { return !s.querySelector('section'); });
+  listovi.forEach(function (s) {
+    var naslov = s.querySelector('h1, h2');
+    s._naslov = naslov ? normalizuj(naslov.textContent) : '';
+    s._tekst = normalizuj(s.textContent);
+    s.querySelectorAll(STAVKE).forEach(function (el) { el._tekst = normalizuj(el.textContent); });
+  });
+
+  var unos = document.getElementById('pretraga');
+  var info = document.getElementById('info');
+  var prazno = document.getElementById('prazno');
+
+  /* Pasus koji najavljuje blok (završava se sa ':') prati vidljivost bloka */
+  function uvod(blok, sakrij) {
+    var p = blok.previousElementSibling;
+    if (p && p.tagName === 'P' && p.textContent.trim().slice(-1) === ':') p.hidden = sakrij;
+  }
+
+  function filtriraj() {
+    var upit = normalizuj(unos.value.trim());
+    var aktivna = upit.length > 0;
+    var broj = 0;
+    document.body.classList.toggle('pretraga-aktivna', aktivna);
+
+    listovi.forEach(function (s) {
+      var redovi = s.querySelectorAll(STAVKE);
+      var blokovi = s.querySelectorAll(BLOKOVI);
+      if (!aktivna) {
+        s.hidden = false;
+        redovi.forEach(function (el) { el.hidden = false; });
+        blokovi.forEach(function (b) { b.hidden = false; uvod(b, false); });
+        return;
+      }
+      var vidljiva = false;
+      if (redovi.length) {
+        var celaSekcija = s._naslov.indexOf(upit) !== -1;
+        redovi.forEach(function (el) {
+          var pogodak = celaSekcija || el._tekst.indexOf(upit) !== -1;
+          el.hidden = !pogodak;
+          if (pogodak) { vidljiva = true; broj++; }
+        });
+        blokovi.forEach(function (b) {
+          b.hidden = !b.querySelector('tbody tr:not([hidden]), li:not([hidden])');
+          uvod(b, b.hidden);
+        });
+      } else if (s._tekst.indexOf(upit) !== -1) {
+        vidljiva = true;
+        broj++;
+      }
+      s.hidden = !vidljiva;
+    });
+
+    sekcije.forEach(function (s) {
+      if (listovi.indexOf(s) !== -1) return;
+      s.hidden = aktivna && !s.querySelector('section:not([hidden])');
+    });
+
+    prazno.hidden = !(aktivna && broj === 0);
+    info.textContent = aktivna ? 'Pronađeno: ' + broj : '';
+  }
+
+  unos.addEventListener('input', filtriraj);
+  unos.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { unos.value = ''; filtriraj(); unos.blur(); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/' && document.activeElement !== unos) { e.preventDefault(); unos.focus(); }
+  });
+
+  /* Klik u bočnom sadržaju poništava pretragu, da bi ciljna sekcija bila vidljiva */
+  document.querySelectorAll('#TOC a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      if (unos.value) { unos.value = ''; filtriraj(); }
+      if (!matchMedia('(min-width: 900px)').matches) nav.open = false;
+    });
+  });
+
+  /* Označavanje trenutne sekcije u bočnom sadržaju */
+  var linkovi = {};
+  document.querySelectorAll('#TOC a').forEach(function (a) {
+    linkovi[decodeURIComponent(a.getAttribute('href').slice(1))] = a;
+  });
+  var naslovi = Array.prototype.slice.call(main.querySelectorAll('section > h1, section > h2'));
+  var aktivanLink = null;
+  var zakazano = false;
+  function oznaci() {
+    zakazano = false;
+    var trenutni = null;
+    for (var i = 0; i < naslovi.length; i++) {
+      if (naslovi[i].offsetParent === null) continue;
+      if (naslovi[i].getBoundingClientRect().top < 120) trenutni = naslovi[i];
+      else break;
+    }
+    var link = trenutni ? linkovi[trenutni.parentElement.id] : null;
+    if (link === aktivanLink) return;
+    if (aktivanLink) aktivanLink.classList.remove('active');
+    if (link) link.classList.add('active');
+    aktivanLink = link;
+  }
+  window.addEventListener('scroll', function () {
+    if (!zakazano) { zakazano = true; requestAnimationFrame(oznaci); }
+  }, { passive: true });
+  oznaci();
+})();
+</script>
+</body>
+</html>
